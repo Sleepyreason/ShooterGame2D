@@ -1,86 +1,54 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] Transform Firepoint;
-    [SerializeField] private float _speed;
     [SerializeField] private Transform _gunPoint;
     [SerializeField] private GameObject _bulletTrail;
     [SerializeField] private float _weaponRange = 10f;
     [SerializeField] private LayerMask _layerMask;
-    //[SerializeField] private Animator _muzzleFlashAnimator;
     [SerializeField] private int _gunStore;
     [SerializeField] private float _reloadTime;
-     float reload = 0;
-    // Start is called before the first frame update
-    void Start()
-    {
-        /*   while (true)
-           {
-               yield return new WaitForSeconds(1);
-               var colision = Physics2D.Raycast(Firepoint.position, transform.right);
-               Shoot();
-           }
-           */
-    }
+    [SerializeField] private Transform _lHandLimb;
+    [SerializeField] private Transform _rHandLimb;
 
-    // Update is called once per frame
+    public Transform LHandLimb => _lHandLimb;
+    public Transform RHandLimb => _rHandLimb;
+
+    public Vector2 dir { get; private set; }
+    private float reload = 0;
+
     void Update()
-    {   
-         if (reload > 0)
     {
-        reload -= Time.deltaTime;
-    }
-    
-    // Проверяем, нужно ли начать перезарядку оружия
-    if (reload <= 0 && _gunStore <= 0)
-    {
-        reload = _reloadTime;
-        _gunStore = 10; // Возможно, это должно быть задано в другом месте, в зависимости от логики вашей игры
-    }
-        
-        
-        /*      
-               // Получаем позицию курсора на экране
-               Vector3 cursorScreenPosition = Input.mousePosition;
+        if (reload > 0)
+        {
+            reload -= Time.deltaTime;
+        }
 
-               // Преобразуем позицию курсора в трехмерные координаты в пространстве игры
-               Vector3 cursorWorldPosition = Camera.main.ScreenToWorldPoint(cursorScreenPosition);
-               cursorWorldPosition.z = 0f; // Устанавливаем z-координату на нулевое значение, чтобы объект оставался на плоскости игры
-
-               // Определяем вектор, указывающий на позицию курсора относительно объекта
-               Vector3 direction = cursorWorldPosition - transform.position;
-
-               // Вычисляем угол между направлением курсора и направлением вправо (1, 0)
-               float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-               // Поворачиваем объект курсора
-               transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-      */
+        if (reload <= 0 && _gunStore <= 0)
+        {
+            reload = _reloadTime;
+            _gunStore = 10; // Возможно, это должно быть задано в другом месте, в зависимости от логики вашей игры
+        }
     }
 
     public void Shoot()
     {
-
-        //_muzzleFlashAnimator.SetTrigger("Shoot");
-        if (reload > 0){
+        if (reload > 0)
+        {
             return;
         }
-        
-        
-        if (_gunStore <= 0 )
+
+        if (_gunStore <= 0)
         {
             reload = _reloadTime;
             return;
         }
-        
+
         var hit = Physics2D.Raycast(_gunPoint.position, transform.right, _weaponRange, _layerMask);
         var trail = Instantiate(_bulletTrail, _gunPoint.position, Quaternion.identity);
         var trailScript = trail.GetComponent<BulletTrail>();
-        _gunStore = _gunStore - 1;
-
+        _gunStore--;
 
         if (hit.collider != null)
         {
@@ -101,13 +69,20 @@ public class Weapon : MonoBehaviour
         if (hittable != null)
         {
             Vector3 direction = other.transform.position - transform.position;
-
-            // Вычисляем угол между направлением курсора и направлением вправо (1, 0)
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-            // Поворачиваем объект курсора
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            dir = direction.normalized;
+            // Вычисляем угол между направлением оружия и направлением к врагу
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            // Если враг находится слева от оружия
+            if (dir.x < 0)
+            {
+                // Поворачиваем оружие на 180 градусов, чтобы смотреть на врага
+                transform.eulerAngles = new Vector3(0, 180, 180 - angle);
+            }
+            else
+            {
+                // В противном случае поворачиваем оружие в стандартное положение
+                transform.eulerAngles = new Vector3(0, 0, angle);
+            }
         }
-
     }
 }
