@@ -28,6 +28,7 @@ public class SpawnEnemy : MonoBehaviour
             GameObject enemyPrefab = spawnEnemy[Random.Range(0, spawnEnemy.Length)];
             var item = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
             var enemy = item.GetComponent<Enemy>();
+            enemy.SetTarget(FindFirstObjectByType<CharacterMovement>().transform);
             enemy.onDeath = DecreaseEnemyCount;
 
             allSpawnEnemies++;

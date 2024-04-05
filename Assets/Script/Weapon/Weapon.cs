@@ -1,5 +1,8 @@
-using System.Collections;
+
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Weapon : MonoBehaviour
 {
@@ -17,7 +20,27 @@ public class Weapon : MonoBehaviour
 
     public Vector2 dir { get; private set; }
     private float reload = 0;
-
+    private List<IHittable> hittables = new();
+    public void LookIt(Vector2 vector2){
+         float angle = Mathf.Atan2(vector2.y, vector2.x) * Mathf.Rad2Deg;
+            // Если враг находится слева от оружия
+            if (vector2.x < 0)
+            {
+                // Поворачиваем оружие на 180 градусов, чтобы смотреть на врага
+                transform.eulerAngles = new Vector3(0, 180, 180 - angle);
+            }
+            else
+            {
+                // В противном случае поворачиваем оружие в стандартное положение
+                transform.eulerAngles = new Vector3(0, 0, angle);
+            }
+    } 
+    public bool HasTarget(){
+        if(hittables.Count == 0){
+            return false;
+        }
+        return true;
+    }
     void Update()
     {
         if (reload > 0)
@@ -29,6 +52,25 @@ public class Weapon : MonoBehaviour
         {
             reload = _reloadTime;
             _gunStore = 10; // Возможно, это должно быть задано в другом месте, в зависимости от логики вашей игры
+        }
+        if (hittables.Count != 0)
+        {   
+            var enemy = hittables.First();
+            Vector3 direction = enemy.GetTransform().position - transform.position;
+            dir = direction.normalized;
+            // Вычисляем угол между направлением оружия и направлением к врагу
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            // Если враг находится слева от оружия
+            if (dir.x < 0)
+            {
+                // Поворачиваем оружие на 180 градусов, чтобы смотреть на врага
+                transform.eulerAngles = new Vector3(0, 180, 180 - angle);
+            }
+            else
+            {
+                // В противном случае поворачиваем оружие в стандартное положение
+                transform.eulerAngles = new Vector3(0, 0, angle);
+            }
         }
     }
 
@@ -63,26 +105,29 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggere(Collider2D other)
     {
         var hittable = other.transform.GetComponent<IHittable>();
         if (hittable != null)
         {
-            Vector3 direction = other.transform.position - transform.position;
-            dir = direction.normalized;
-            // Вычисляем угол между направлением оружия и направлением к врагу
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            // Если враг находится слева от оружия
-            if (dir.x < 0)
-            {
-                // Поворачиваем оружие на 180 градусов, чтобы смотреть на врага
-                transform.eulerAngles = new Vector3(0, 180, 180 - angle);
-            }
-            else
-            {
-                // В противном случае поворачиваем оружие в стандартное положение
-                transform.eulerAngles = new Vector3(0, 0, angle);
-            }
+
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        var hittable = other.transform.GetComponent<IHittable>();
+        if (hittable != null)
+        {
+            hittables.Add(hittable);
+        }
+
+    }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        var hittable = other.transform.GetComponent<IHittable>();
+        if (hittable != null)
+        {
+            hittables.Remove(hittable);
         }
     }
 }

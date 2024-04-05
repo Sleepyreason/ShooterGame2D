@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class BagUI : MonoBehaviour
@@ -23,11 +24,12 @@ public class BagUI : MonoBehaviour
         var offSet = 0;
         foreach (var item in list)
         {
-        var Button = Instantiate(Prefab, transform);
-        Button.transform.position -= new Vector3(offSet, 0, 0);
-        offSet += 100;
-        Button.Render(item);
-        Debug.Log(offSet);
+            var Button = Instantiate(Prefab, transform);
+            Button.transform.position -= new Vector3(offSet, 0, 0);
+            offSet += 100;
+            Button.Render(item);
+            Debug.Log(offSet);
         }
     }
+
 }
