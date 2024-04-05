@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.U2D.IK;
 
 public class CharacterMovement : MonoBehaviour, IHittable
@@ -13,7 +14,9 @@ public class CharacterMovement : MonoBehaviour, IHittable
     [SerializeField] Weapon weapon; // Заменил Weapon на weapon, так как в C# имена переменных обычно начинаются с маленькой буквы
     [SerializeField] Transform skelet;
     [SerializeField] int health;
+    int MaxHealth;
     private Animator animator;
+    [SerializeField] SpriteRenderer HealthBox;
 
     bool flip = false;
 
@@ -40,6 +43,7 @@ public class CharacterMovement : MonoBehaviour, IHittable
     }
     void Start()
     {
+        MaxHealth = health;
         animator = GetComponent<Animator>();
         Global.EventManager.OnTakeWeapon.AddListener(OnTakeWeapon);
         rigidbody2D = GetComponent<Rigidbody2D>();
@@ -111,9 +115,18 @@ public class CharacterMovement : MonoBehaviour, IHittable
      public void OnDamage(int Damage)
     {
         health -= Damage;
+        Vector2 currentScale = HealthBox.size;
+        
+        // Уменьшаем значение координаты x на 0.1
+        currentScale.x = (float)health/(float)MaxHealth;
+
+        // Применяем новый масштаб объекту
+        HealthBox.size = currentScale;
+       // HealthBox.transform.localScale = new Vector2(health/MaxHealth, 1);
         if (health <= 0)
-        {
-            Debug.Log("health");
+        {   
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
     }

@@ -299,6 +299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 2
   target: {fileID: 0}
+  damage: 1
 --- !u!195 &-3532205377820726959
 NavMeshAgent:
   m_ObjectHideFlags: 0
