@@ -21,6 +21,20 @@ public class Enemy : MonoBehaviour, IHittable
     public UnityAction onDeath;
     [SerializeField] SpriteRenderer HealthMob;
     int MaxHealth;
+    public GameObject item;
+    public float prob = 15;
+    float rnd;
+    public void Drop()
+    {
+        rnd = Random.Range (0,100);
+        if (rnd <= prob){
+            GameObject Item = Instantiate(item,transform.position,Quaternion.identity);
+            Destroy(gameObject, 2);
+        }
+        else{
+            Destroy(gameObject, 2);
+        }
+    }
     public void SetTarget(Transform target)
     {
         this.target = target;
@@ -33,13 +47,13 @@ public class Enemy : MonoBehaviour, IHittable
         currentScale.x = (float)health/(float)MaxHealth;
 
         HealthMob.size = currentScale;
-        
+
         if (health <= 0)
         {
             animator.SetTrigger("Death");
             dead = true;
             Destroy(collider2D);
-            Destroy(gameObject, 2);
+            Drop();
             onDeath.Invoke();
         }
 

@@ -387,6 +387,8 @@ MonoBehaviour:
   damage: 1
   attackCooldown: 1
   HealthMob: {fileID: 6792395975433274891}
+  item: {fileID: 6375265932049680171, guid: 7c069e78ed562384e9d8807774a0f46f, type: 3}
+  prob: 50
 --- !u!195 &-3532205377820726959
 NavMeshAgent:
   m_ObjectHideFlags: 0
