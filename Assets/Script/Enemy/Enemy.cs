@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour, IHittable
 {
@@ -18,7 +19,8 @@ public class Enemy : MonoBehaviour, IHittable
     NavMeshAgent agent;
     bool flip = false;
     public UnityAction onDeath;
-
+    [SerializeField] SpriteRenderer HealthMob;
+    int MaxHealth;
     public void SetTarget(Transform target)
     {
         this.target = target;
@@ -26,6 +28,12 @@ public class Enemy : MonoBehaviour, IHittable
     public void OnDamage(int Damage)
     {
         health -= Damage;
+        Vector2 currentScale = HealthMob.size;
+        
+        currentScale.x = (float)health/(float)MaxHealth;
+
+        HealthMob.size = currentScale;
+        
         if (health <= 0)
         {
             animator.SetTrigger("Death");
@@ -41,6 +49,7 @@ public class Enemy : MonoBehaviour, IHittable
     // Start is called before the first frame update
     void Start()
     {
+        MaxHealth = health;
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -73,8 +82,9 @@ public class Enemy : MonoBehaviour, IHittable
     }
 
     void Update()
-    {   
-        if(dead){
+    {
+        if (dead)
+        {
             return;
         }
         if (agent.remainingDistance <= agent.stoppingDistance)
