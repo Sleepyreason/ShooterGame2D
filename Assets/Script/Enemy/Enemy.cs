@@ -55,6 +55,7 @@ public class Enemy : MonoBehaviour, IHittable
             Destroy(collider2D);
             Drop();
             onDeath.Invoke();
+            agent.isStopped = true;
         }
 
     }
