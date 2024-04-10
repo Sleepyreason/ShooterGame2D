@@ -26,11 +26,10 @@ public class BagCellUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
         CancelInvoke("CheckLongPress");
         if (isLongPress) {
             isLongPress = false;
-            // Удаление предмета из инвентаря и уничтожение ячейки
-            InventoryManager.Instance.RemoveItem(weapon);
+            Global.EventManager.UnequipWeapon();
+            CharacterBag.Instance.RemoveItem(weapon);
             Destroy(gameObject); // Уничтожить эту ячейку
         } else {
-            // Просто взять предмет в руку
             Global.EventManager.TakeWeapon(weapon);
         }
     }

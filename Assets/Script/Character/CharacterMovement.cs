@@ -41,11 +41,22 @@ public class CharacterMovement : MonoBehaviour, IHittable
         rightLeft.weight = weapon.RHandLimb != null ? 1 : 0;
 
     }
+    void OnUnequipWeapon(){
+        if (weapon != null)
+        {
+            Destroy(weapon.gameObject);   
+        }
+        limbLeft.weight = 0;
+        rightLeft.weight = 0;
+
+    }
+
     void Start()
     {
         MaxHealth = health;
         animator = GetComponent<Animator>();
         Global.EventManager.OnTakeWeapon.AddListener(OnTakeWeapon);
+        Global.EventManager.OnUnequipWeapon.AddListener(OnUnequipWeapon);
         rigidbody2D = GetComponent<Rigidbody2D>();
         collider2D = GetComponent<Collider2D>();
     }

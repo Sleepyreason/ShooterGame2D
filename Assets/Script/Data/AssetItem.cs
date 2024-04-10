@@ -27,21 +27,4 @@ public class AssetItem : ScriptableObject, IItem
             return instance;
         }
     }
-    public void AddItem(AssetItem item) {
-    }
-
-    public void RemoveItem(AssetItem item) {
-        Global.EventManager.TakeWeapon(item);
-    }
-
-    public List<AssetItem> GetInventoryItems() {
-        return null; 
-    }
-    public class PlayerHand {
-    private AssetItem currentItem;
-
-    public void ClearItem() {
-        currentItem = null; 
-    }
-}
 }

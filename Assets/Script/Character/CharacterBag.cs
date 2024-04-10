@@ -6,16 +6,12 @@ public class CharacterBag : MonoBehaviour
 {
   List<AssetItem> Drops = new();
   [SerializeField] BagUI bagUI;
-  // Start is called before the first frame update
-  void Start()
-  {
-
+   static public CharacterBag Instance;
+  CharacterBag(){
+    Instance = this;
   }
-
-  // Update is called once per frame
-  void Update()
-  {
-
+  public void RemoveItem(AssetItem item){
+    Drops.Remove(item);
   }
   private void OnTriggerEnter2D(Collider2D other)
   {

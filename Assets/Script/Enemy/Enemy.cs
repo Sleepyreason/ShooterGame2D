@@ -21,14 +21,15 @@ public class Enemy : MonoBehaviour, IHittable
     public UnityAction onDeath;
     [SerializeField] SpriteRenderer HealthMob;
     int MaxHealth;
-    public GameObject item;
+    public List<GameObject> items;
     public float prob = 15;
     float rnd;
     public void Drop()
     {
         rnd = Random.Range (0,100);
         if (rnd <= prob){
-            GameObject Item = Instantiate(item,transform.position,Quaternion.identity);
+            var item = items[Random.Range(0,items.Count)];
+            Instantiate(item,transform.position,Quaternion.identity);
             Destroy(gameObject, 2);
         }
         else{
