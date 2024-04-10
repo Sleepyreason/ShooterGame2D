@@ -4,16 +4,23 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+
+
 public class BagUI : MonoBehaviour
 {
+    
     [SerializeField] BagCellUI Prefab;
-    // Start is called before the first frame update
-    void Start()
-    {
+    private static BagUI instance;
 
+    public static BagUI Instance {
+        get {
+            if (instance == null) {
+                instance = FindObjectOfType<BagUI>();
+            }
+            return instance;
+        }
     }
-
-    // Update is called once per frame
+   
     public void Render(List<AssetItem> list)
     {
         var ChildCount = transform.childCount;
